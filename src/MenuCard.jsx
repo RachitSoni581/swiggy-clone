@@ -1,8 +1,10 @@
 import RestInfo from "./RestInfo";
 import { useState } from "react";
-export default function MenuCard({menuItems}){
+
+export default function MenuCard({menuItems,foodSelected}){
 
     const [isOpen,setIsOpen] = useState(true);
+    const [selected,setSelected] = useState(null);
     
 
     if("categories" in  menuItems){
@@ -10,7 +12,7 @@ export default function MenuCard({menuItems}){
             <div className="w-full"> 
                         <p className="text-2xl font-bold">{menuItems.title}</p>
                         <div>{
-                            menuItems?.categories?.map((items)=><MenuCard key={items?.title} menuItems={items}></MenuCard>)
+                            menuItems?.categories?.map((items)=><MenuCard key={items?.title} menuItems={items} foodSelected={foodSelected}></MenuCard>)
                             }</div>
 
                         </div>
@@ -28,7 +30,45 @@ export default function MenuCard({menuItems}){
             </div>
         );
     }
+  
+    if(foodSelected ==='veg'){
+        return(
+           <div className="w-full ">
+            <div className="flex justify-between w-full">
+            <p className="text-3xl font-bold mb-4">{menuItems.title}</p>
+            <button className="text-5xl font-bold mr-20" onClick={()=>setIsOpen(!isOpen)}>{isOpen ? '⌃' : '⌄'}</button>
+            </div> 
+             <div>
+                {   
+                    menuItems?.itemCards?.filter((food)=>"isVeg" in food?.card?.info).map((items)=><RestInfo key={items?.card?.info?.id} restData={items?.card?.info} ></RestInfo>)
+                }
+            </div>
+                        <div className="h-5 bg-gray-200 mt-2 mb-2"></div>
+
+        </div> 
+        )
+    }
+    if(foodSelected ==='nonveg'){
+          return(
+           <div className="w-full ">
+            <div className="flex justify-between w-full">
+            <p className="text-3xl font-bold mb-4">{menuItems.title}</p>
+            <button className="text-5xl font-bold mr-20" onClick={()=>setIsOpen(!isOpen)}>{isOpen ? '⌃' : '⌄'}</button>
+            </div> 
+             <div>
+                {   
+                    menuItems?.itemCards?.filter((food)=> !("isVeg" in food?.card?.info)).map((items)=><RestInfo key={items?.card?.info?.id} restData={items?.card?.info} ></RestInfo>)
+                }
+            </div>
+                        <div className="h-5 bg-gray-200 mt-2 mb-2"></div>
+
+        </div> 
+        )
+    }
+
     return(
+
+        
         <div className="w-full ">
             <div className="flex justify-between w-full">
             <p className="text-3xl font-bold mb-4">{menuItems.title}</p>
@@ -42,5 +82,6 @@ export default function MenuCard({menuItems}){
                         <div className="h-5 bg-gray-200 mt-2 mb-2"></div>
 
         </div>
+        
     );
 }
